@@ -24,8 +24,8 @@ $this->title = 'Gallery';
                     [
                         'label' => 'Preview',
                         'format' => 'html',
-                        'value' => function ($data) {
-                            return Html::img("uploads/$data->title", ["width" => "50px"]);
+                        'value' => function ($data) use ($uploadDir) {
+                            return Html::img("$uploadDir" . "$data->title", ["width" => "50px"]);
                         }
                     ],
                     'time'

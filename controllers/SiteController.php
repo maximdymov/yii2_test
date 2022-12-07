@@ -13,6 +13,7 @@ use yii\web\UploadedFile;
 class SiteController extends Controller
 {
 
+    private string $uploadDir = 'uploads/';
     /**
      * Displays gallery.
      *
@@ -25,7 +26,7 @@ class SiteController extends Controller
             'pagination' => ['pageSize' => 10]
         ]);
 
-        return $this->render('gallery', ['images' => $images]);
+        return $this->render('gallery', ['images' => $images, 'uploadDir' => $this->uploadDir]);
     }
 
     /**
@@ -45,7 +46,7 @@ class SiteController extends Controller
                 $image->name = $title;
             }
 
-            if ($model->upload()) {
+            if ($model->upload($this->uploadDir)) {
                 $this->redirect('/');
             }
         }
@@ -60,7 +61,7 @@ class SiteController extends Controller
     public function actionShow()
     {
         $title = Yii::$app->request->get()['title'];
-
+        $title = $this->uploadDir . $title;
         return $this->render('_image', ['title' => $title]);
     }
 }

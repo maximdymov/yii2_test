@@ -18,11 +18,11 @@ class UploadForm extends Model
         ];
     }
 
-    public function upload()
+    public function upload($directory)
     {
         if ($this->validate()) {
             foreach ($this->images as $image) {
-                $image->saveAs('uploads/' . $image->name);
+                $image->saveAs($directory . $image->name);
             }
             return true;
         } else {
