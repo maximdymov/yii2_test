@@ -9,7 +9,6 @@ $this->title = 'Gallery';
 ?>
 <div class="gallery">
     <h1><?= Html::encode($this->title) ?></h1>
-
     <div class="container">
         <div class="row">
             <?= GridView::widget([
@@ -34,6 +33,4 @@ $this->title = 'Gallery';
             ]) ?>
         </div>
     </div>
-
-
 </div>

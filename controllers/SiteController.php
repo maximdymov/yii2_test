@@ -6,66 +6,25 @@ use app\models\Image;
 use app\models\ImageRepository;
 use app\models\UploadForm;
 use Yii;
-use yii\filters\AccessControl;
-use yii\helpers\BaseInflector;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
 
     /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
-
-    /**
-     * Displays homepage.
+     * Displays gallery.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $images = ImageRepository::getAll();
+        $images = new ActiveDataProvider([
+            'query' => Image::find(),
+            'pagination' => ['pageSize' => 10]
+        ]);
+
         return $this->render('gallery', ['images' => $images]);
     }
 
@@ -79,12 +38,11 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-
             $model->images = UploadedFile::getInstances($model, 'images');
 
             foreach ($model->images as $image) {
-                $imgTitle = ImageRepository::add($image);
-                $image->name = $imgTitle;
+                $title = ImageRepository::create($image);
+                $image->name = $title;
             }
 
             if ($model->upload()) {
@@ -92,5 +50,17 @@ class SiteController extends Controller
             }
         }
         return $this->render('add', ['model' => $model]);
+    }
+
+    /**
+     * Displays one image.
+     *
+     * @return string
+     */
+    public function actionShow()
+    {
+        $title = Yii::$app->request->get()['title'];
+
+        return $this->render('_image', ['title' => $title]);
     }
 }
