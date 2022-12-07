@@ -2,6 +2,7 @@
 
 /** @var yii\web\View $this */
 
+use yii\grid\GridView;
 use yii\helpers\Html;
 
 $this->title = 'Gallery';
@@ -11,11 +12,26 @@ $this->title = 'Gallery';
 
     <div class="container">
         <div class="row">
-            <?php foreach ($images as $image): ?>
-                <div class="col-6">
-                    <?= Html::img("uploads/$image->title", ['class' => 'img-responsive', 'style' => "width:200px;height:200px;margin:20px"]) ?>
-                </div>
-            <?php endforeach; ?>
+            <?= GridView::widget([
+                'dataProvider' => $images,
+                'columns' => [
+                    [
+                        'attribute' => 'title',
+                        'format' => 'raw',
+                        'value' => function ($data) {
+                            return Html::a($data->title, "/show?title=$data->title");
+                        }
+                    ],
+                    [
+                        'label' => 'Preview',
+                        'format' => 'html',
+                        'value' => function ($data) {
+                            return Html::img("uploads/$data->title", ["width" => "50px"]);
+                        }
+                    ],
+                    'time'
+                ]
+            ]) ?>
         </div>
     </div>
 

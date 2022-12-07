@@ -48,7 +48,8 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '/' => '/site/index',
-                '/add' => '/site/add'
+                '/add' => '/site/add',
+                '/show' => '/site/show'
             ],
         ],
 
